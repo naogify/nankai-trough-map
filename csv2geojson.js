@@ -42,7 +42,20 @@ const csv2geojson = (csvFile, geojsonFile) => {
         coordinates: coordinates
       },
       properties: {
-        ...record
+        "浸水深公表値_m": record["浸水深公表値_m"],
+        "到達時間_01cm_s": record["到達時間_01cm_s"],
+        "到達時間_30cm_s": record["到達時間_30cm_s"],
+        "到達時間_01m_s": record["到達時間_01m_s"],
+        "到達時間_03m_s": record["到達時間_03m_s"],
+        "到達時間_05m_s": record["到達時間_05m_s"],
+        "到達時間_10m_s": record["到達時間_10m_s"],
+        "到達時間_20m_s": record["到達時間_20m_s"],
+        "到達時間_30m_s": record["到達時間_30m_s"],
+        "到達時間_40m_s": record["到達時間_40m_s"],
+        "到達時間_最高水位_s": record["到達時間_最高水位_s"],
+        "参考値:浸水深_m": record["参考値:浸水深_m"],
+        "参考値:地殻変動後の標高_m": record["参考値:地殻変動後の標高_m"],
+        "参考値:隆起量_m": record["参考値:隆起量_m"],
       }
     }
     geojson.features.push(feature)
@@ -50,7 +63,7 @@ const csv2geojson = (csvFile, geojsonFile) => {
     // write geojson file
     fs.writeFileSync(geojsonFile, JSON.stringify(geojson))
 
-    console.log(`進捗: ${index + 1}/${maxDataLength} \r`)
+    console.log(`進捗: ${index + 1}/${maxDataLength} : ${((index + 1) / maxDataLength) * 100}%\r`)
   })
 
 }
