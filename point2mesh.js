@@ -14,6 +14,12 @@ function point2mesh(lat, lon, meters, baseLat) {
     var lat2 = lat - latDegreesOf10m;
     var lon2 = lon - lonDegreesOf10m;
 
+    // cast all values to float
+    lat1 = parseFloat(lat1);
+    lon1 = parseFloat(lon1);
+    lat2 = parseFloat(lat2);
+    lon2 = parseFloat(lon2);
+
     var polygon = [
         [lon1, lat1],
         [lon2, lat1],
