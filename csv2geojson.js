@@ -68,4 +68,4 @@ const csv2geojson = (csvFile, geojsonFile) => {
 
 }
 
-csv2geojson('depth-case2-06area-teibo-break.csv', 'data.geojson')
+csv2geojson('bbox-kushimoto.csv', 'data.geojson')
