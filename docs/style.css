@@ -31,15 +31,14 @@ body,
   font-family: 'Montserrat', Arial, Helvetica, sans-serif;
   font-size: 20px;
   font-weight: 600;
-  /* margin: 0; */
-  width: calc(100% - 24px);
+  width: calc(100% - 15px);
 }
 
 .map-overlay-container .title span {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   color: #2E3C43;
-  margin-left: 8px;
+  display: block;
 }
 
 .description {
