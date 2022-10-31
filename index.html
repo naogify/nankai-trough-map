@@ -92,40 +92,68 @@
   <div class="map-overlay-container">
     <div class="map-overlay top">
       <div class="map-overlay-inner">
-        <h2>新規食品営業許可件数（許可満了年別）</h2>
+        <h2>Tsunami visualization map by Nankai Trough Mega Earthquake (Kushimoto, Wakayama, Japan)</h2>
         <label id="year"></label>
-        <input id="slider" type="range" min="0" max="20" step="1" value="0">
+        <input id="slider" type="range" min="0" max="3600" step="30" value="0">
         <div class="legend-container">
-          <div id="legend-color">
+          <!-- <div id="legend-color">
             <div style="flex:0 0 33%;background:#FFCD38"></div>
             <div style="flex:0 0 33%;background:#FF8D29"></div>
             <div style="flex:0 0 33%;background:#FF4949"></div>
-          </div>
+          </div> -->
           <div id="legend-number">
-            <div style="width:33%">0</div>
+            <!-- <div style="width:33%">0</div>
             <div style="width:33%">25</div>
-            <div style="width:33%"><span>50</span><span>122</span></div>
+            <div style="width:33%"><span>50</span><span>122</span></div> -->
+            <div style="width:50%">0min</div>
+            <div style="width:50%">60min</div>
           </div>
+          <div id="currentTime">0min</div>
         </div>
-        <div class="note">※126㎡毎に集計</div>
-        <a class="attribution" href="https://www.city.osaka.lg.jp/contents/wdu290/opendata/#cat-all_data-00000382">
-          <p>「食品営業許可施設一覧（令和3年12月31日現在）」（大阪市）を加工して作成</p>
+        <div class="note">※Calculated per 10㎡</div>
+        <a class="attribution"
+          href="https://www.geospatial.jp/ckan/dataset/1211/resource/d2313be4-49ba-415b-b1cf-5a3ed82fe50c">
+          <p>This map contains data from「内閣府 南海トラフの巨大地震モデル検討会」（津波断層モデル(11)津波浸水深データ（ケース1）ケース02_堤防破堤）</p>
         </a>
       </div>
     </div>
   </div>
-  <script type="text/javascript" src="https://cdn.geolonia.com/v1/embed?geolonia-api-key=YOUR-API-KEY"></script>
+  <!-- <script type="text/javascript" src="https://cdn.geolonia.com/v1/embed?geolonia-api-key=YOUR-API-KEY"></script> -->
+  <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
   <script>
-    const map = new geolonia.Map({
+    const map = new maplibregl.Map({
       container: 'map',
-      style: 'geolonia/basic',
-      center: [135.6464645, 34.8334164],
-      zoom: 19,
+      style: 'https://cdn.geolonia.com/style/geolonia/gsi/en.json',
+      center: [135.78149, 33.47047],
+      pitch: 60,
+      bearing: -26.4,
+      zoom: 13.69,
       hash: true,
-      marker: false,
+      minZoom: 10
     });
 
     map.on('load', () => {
+
+      // add terrainSource
+      map.addSource('terrainSource', {
+        type: 'raster-dem',
+        url: 'https://tileserver.geolonia.com/gsi-dem/tiles.json?key=YOUR-API-KEY',
+        tileSize: 512,
+      });
+
+      map.setTerrain({
+        source: "terrainSource"
+      });
+
+      //add hillshade layer
+      map.addLayer({
+        id: 'hillshade',
+        type: 'hillshade',
+        source: 'terrainSource',
+        paint: {
+          "hillshade-shadow-color": "#473B24"
+        },
+      });
 
       const compareNow = (arriveTime, nextArriveTime, currentTime) => {
         return [
@@ -146,149 +174,107 @@
       const baseLayer = {
         type: 'fill-extrusion',
         source: 'nankai-trough',
+        'source-layer': 'g-simplestyle-v1',
         paint: {
           'fill-extrusion-color': '#ff0000',
           'fill-extrusion-opacity': 0.8
         }
       }
 
-      /**
-       * input: 現在の時間
-       * output: レイヤーの表示
-       * 
-       * 1. 現在の時間を取得
-       * 3. 現在の時間と「到達時間_01cm_s」を比較
-       *  3.1. 現在の時間が「到達時間_01cm_s」よりも小さければ、表示されない
-       *  3.2. 現在の時間が「到達時間_01cm_s」よりも大きいかつ、「到達時間_30cm_s」よりも小さければ、1cm を表示
-       *  3.3. 現在の時間が「到達時間_01cm_s」よりも大きいかつ、「到達時間_30cm_s」よりも大きければ、["到達時間_01m_s"]と、現在の時間を比較、小さければ30cmを表示
-       *  3.4. 現在の時間が「到達時間_01cm_s」よりも大きいかつ、「到達時間_30cm_s」が、-9999 なら、["到達時間_最高水位_s"]と、現在の時間を比較、小さければ1cmを表示、大きければ「浸水深公表値_m」を表示
-       */
-
+      // add vector source
       map.addSource('nankai-trough', {
-        type: 'geojson',
-        data: 'https://gist.githubusercontent.com/naogify/460cb84d5e4ac0018a8ce72c4e2d246f/raw/cc3b7e952114a73e82e9f6f155d0c8f9170b0700/nankai-trough-v0.geojson'
+        type: 'vector',
+        url: 'https://tileserver.geolonia.com/naoki-nankai-trough-tsunami-v1/tiles.json?key=YOUR-API-KEY'
       });
 
       map.addLayer({
         id: 'tsunami-1cm',
-        // filter: compareNow('到達時間_01cm_s', '到達時間_30cm_s'),
         ...baseLayer,
         paint: {
           ...baseLayer.paint,
-          // 'fill-extrusion-height': 0.01,
-          'fill-extrusion-color': '#ff0000',
+          'fill-extrusion-height': 0.01,
         }
       });
 
       map.addLayer({
         id: 'tsunami-30cm',
-        // filter: compareNow('到達時間_30cm_s', '到達時間_01m_s'),
         ...baseLayer,
         paint: {
           ...baseLayer.paint,
-          // 'fill-extrusion-height': 0.3,
-          'fill-extrusion-color': '#ff0000',
+          'fill-extrusion-height': 0.3,
         }
       });
 
       map.addLayer({
         id: 'tsunami-1m',
-        // filter: compareNow('到達時間_01m_s', '到達時間_03m_s'),
         ...baseLayer,
         paint: {
           ...baseLayer.paint,
-          // 'fill-extrusion-height': 1,
-          'fill-extrusion-color': '#ff0000',
+          'fill-extrusion-height': 1,
         }
       });
 
       map.addLayer({
         id: 'tsunami-3m',
-        // filter: compareNow('到達時間_03m_s', '到達時間_05m_s'),
         ...baseLayer,
         paint: {
           ...baseLayer.paint,
-          // 'fill-extrusion-height': 3,
-          'fill-extrusion-color': '#ff0000',
+          'fill-extrusion-height': 3,
         }
       });
 
       map.addLayer({
         id: 'tsunami-5m',
-        // filter: compareNow('到達時間_05m_s', '到達時間_10m_s'),
         ...baseLayer,
         paint: {
           ...baseLayer.paint,
-          // 'fill-extrusion-height': 5,
-          'fill-extrusion-color': '#ff0000',
+          'fill-extrusion-height': 5,
         }
       });
 
       map.addLayer({
         id: 'tsunami-10m',
-        // filter: compareNow('到達時間_10m_s', '到達時間_20m_s'),
         ...baseLayer,
         paint: {
           ...baseLayer.paint,
-          // 'fill-extrusion-height': 10,
-          'fill-extrusion-color': '#ff0000',
+          'fill-extrusion-height': 10,
         }
       });
 
       map.addLayer({
         id: 'tsunami-20m',
-        // filter: compareNow('到達時間_20m_s', '到達時間_30m_s'),
         ...baseLayer,
         paint: {
           ...baseLayer.paint,
-          // 'fill-extrusion-height': 20,
-          'fill-extrusion-color': '#ff0000',
+          'fill-extrusion-height': 20,
         }
       });
 
       map.addLayer({
         id: 'tsunami-30m',
-        // filter: compareNow('到達時間_30m_s', '到達時間_40m_s'),
         ...baseLayer,
         paint: {
           ...baseLayer.paint,
-          // 'fill-extrusion-height': 30,
-          'fill-extrusion-color': '#ff0000',
+          'fill-extrusion-height': 30,
         }
       });
 
       map.addLayer({
         id: 'tsunami-40m',
-        // filter: compareNow('到達時間_40m_s', '到達時間_最高水位_s'),
         ...baseLayer,
         paint: {
           ...baseLayer.paint,
-          // 'fill-extrusion-height': 40,
-          'fill-extrusion-color': '#ff0000',
+          'fill-extrusion-height': 40,
         }
       });
 
       // 到達時間_最高水位_sのレイヤーを追加する
       map.addLayer({
         id: 'tsunami-highest',
-        // filter: [
-        //   'all',
-        //   ['<=', ['to-number', ['get', '到達時間_最高水位_s']], currentTime], // 現在の時間が 到達時間_最高水位_s より大きいかつ、他の到達時間より大きい or 他の到達時間が -9999
-        //   ['any', ['<=', ['to-number', ['get', '到達時間_01cm_s']], currentTime], ['==', ['to-number', ['get', '到達時間_01cm_s']], -9999]],
-        //   ['any', ['<=', ['to-number', ['get', '到達時間_30cm_s']], currentTime], ['==', ['to-number', ['get', '到達時間_30cm_s']], -9999]],
-        //   ['any', ['<=', ['to-number', ['get', '到達時間_01m_s']], currentTime], ['==', ['to-number', ['get', '到達時間_01m_s']], -9999]],
-        //   ['any', ['<=', ['to-number', ['get', '到達時間_03m_s']], currentTime], ['==', ['to-number', ['get', '到達時間_03m_s']], -9999]],
-        //   ['any', ['<=', ['to-number', ['get', '到達時間_05m_s']], currentTime], ['==', ['to-number', ['get', '到達時間_05m_s']], -9999]],
-        //   ['any', ['<=', ['to-number', ['get', '到達時間_10m_s']], currentTime], ['==', ['to-number', ['get', '到達時間_10m_s']], -9999]],
-        //   ['any', ['<=', ['to-number', ['get', '到達時間_20m_s']], currentTime], ['==', ['to-number', ['get', '到達時間_20m_s']], -9999]],
-        //   ['any', ['<=', ['to-number', ['get', '到達時間_30m_s']], currentTime], ['==', ['to-number', ['get', '到達時間_30m_s']], -9999]],
-        //   ['any', ['<=', ['to-number', ['get', '到達時間_40m_s']], currentTime], ['==', ['to-number', ['get', '到達時間_40m_s']], -9999]],
-        // ],
         ...baseLayer,
         paint: {
           ...baseLayer.paint,
-          // 'fill-extrusion-height': ['to-number', ['get', '浸水深公表値_m']],
-          'fill-extrusion-color': '#ff0000',
+          'fill-extrusion-height': ['to-number', ['get', '浸水深公表値_m']],
         }
       });
 
@@ -315,24 +301,26 @@
           ['any', ['<=', ['to-number', ['get', '到達時間_30m_s']], currentTime], ['==', ['to-number', ['get', '到達時間_30m_s']], -9999]],
           ['any', ['<=', ['to-number', ['get', '到達時間_40m_s']], currentTime], ['==', ['to-number', ['get', '到達時間_40m_s']], -9999]],
         ]);
-
-        map.setPaintProperty('tsunami-1cm', 'fill-extrusion-height', 0.01);
-        map.setPaintProperty('tsunami-30cm', 'fill-extrusion-height', 0.3);
-        map.setPaintProperty('tsunami-1m', 'fill-extrusion-height', 1);
-        map.setPaintProperty('tsunami-3m', 'fill-extrusion-height', 3);
-        map.setPaintProperty('tsunami-5m', 'fill-extrusion-height', 5);
-        map.setPaintProperty('tsunami-10m', 'fill-extrusion-height', 10);
-        map.setPaintProperty('tsunami-20m', 'fill-extrusion-height', 20);
-        map.setPaintProperty('tsunami-30m', 'fill-extrusion-height', 30);
-        map.setPaintProperty('tsunami-40m', 'fill-extrusion-height', 40);
-        map.setPaintProperty('tsunami-highest', 'fill-extrusion-height', ['to-number', ['get', '浸水深公表値_m']]);
       }
 
+      filterBy(-1)
+
+      const currentTimeLabel = document.getElementById('currentTime');
+
       document.getElementById("slider").addEventListener("input", (e) => {
-        console.log(e.target.value);
         const currentTime = parseInt(e.target.value, 10);
+        currentTimeLabel.innerHTML = `${currentTime / 60}min`;
         filterBy(currentTime);
       });
+
+      // click to show all layers feature properties in console
+      map.on('click', (e) => {
+        const features = map.queryRenderedFeatures(e.point, { layers: ['tsunami-1cm', 'tsunami-30cm', 'tsunami-1m', 'tsunami-3m', 'tsunami-5m', 'tsunami-10m', 'tsunami-20m', 'tsunami-30m', 'tsunami-40m', 'tsunami-highest'] });
+        if (features.length) {
+          console.log(features[0].properties);
+        }
+      });
+
 
     });
   </script>
