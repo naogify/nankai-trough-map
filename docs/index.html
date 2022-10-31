@@ -7,117 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nankai Trough Tsunami Visualization Map</title>
   <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
-  <style>
-    html,
-    body,
-    #map {
-      width: 100%;
-      height: 100%;
-      padding: 0;
-      margin: 0;
-    }
-
-    .map-overlay-container {
-      position: absolute;
-      z-index: 2;
-      top: 10px;
-      left: 10px;
-      width: 320px;
-      background: #f2f2f2;
-      border-radius: 4px;
-      padding: 16px;
-      margin: 0 0 24px;
-      box-shadow: 0 0px 16px rgb(0 0 0 / 24%);
-    }
-
-    .map-overlay-container label {
-      margin-right: 3px;
-    }
-
-    .map-overlay-container .title {
-      display: inline-block;
-      color: #2E3C43;
-      line-height: 28px;
-      font-family: 'Montserrat', Arial, Helvetica, sans-serif;
-      font-size: 20px;
-      font-weight: 600;
-      /* margin: 0; */
-      width: calc(100% - 24px);
-    }
-
-    .map-overlay-container .title span {
-      font-size: 14px;
-      font-weight: 400;
-      color: #2E3C43;
-      margin-left: 8px;
-    }
-
-    .description {
-      color: #747D82;
-      font-size: 12px;
-      line-height: 16px;
-      font-weight: 400;
-      margin-top: 0;
-      margin-bottom: 0;
-    }
-
-    #slider {
-      width: calc(100% - 24px);
-      margin: 10px 0;
-    }
-
-    .legend-container {
-      margin: 10px 0;
-    }
-
-    #legend-color {
-      height: 8px;
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-    }
-
-    #legend-number {
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-    }
-
-    #legend-number div:last-child {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    #year {
-      font-size: 14px;
-    }
-
-    .note {
-      font-size: 12px;
-      margin: 10px 0;
-    }
-
-    h2 {
-      font-size: 16px;
-    }
-
-    #toolTip {
-      position: absolute;
-      z-index: 2;
-      background-color: rgba(255, 255, 255, 0.8);
-      padding: 5px;
-      font-size: 12px;
-    }
-
-    .attribution {
-      font-size: 12px;
-    }
-  </style>
+  <link href="./style.css" rel="stylesheet" />
 </head>
 
 <body>
   <div id="map" data-style="geolonia/basic" data-marker="off" data-hash="off"></div>
-
   <div class="map-overlay-container">
     <div class="map-overlay top">
       <div class="map-overlay-inner">
@@ -150,15 +44,6 @@
 
     map.on('load', () => {
 
-      // add source raster
-      // map.addSource('gsi-raster', {
-      //   type: 'raster',
-      //   tiles: [
-      //     'https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg',
-      //   ],
-      // });
-
-      // add terrainSource
       map.addSource('terrainSource', {
         type: 'raster-dem',
         url: 'https://tileserver.geolonia.com/gsi-dem/tiles.json?key=YOUR-API-KEY',
@@ -169,7 +54,6 @@
         source: "terrainSource"
       });
 
-      //add hillshade layer
       map.addLayer(
         {
           id: 'hillshade',
@@ -181,15 +65,6 @@
         },
         'poi'
       );
-
-      // map.addLayer({
-      //   id: 'raster',
-      //   type: 'raster',
-      //   source: 'gsi-raster',
-      //   paint: {
-      //     'raster-opacity': 0.8
-      //   }
-      // });
 
       const compareNow = (arriveTime, nextArriveTime, currentTime) => {
         return [
@@ -218,7 +93,6 @@
         }
       }
 
-      // add vector source
       map.addSource('nankai-trough', {
         type: 'vector',
         url: 'https://tileserver.geolonia.com/naoki-nankai-trough-tsunami-v1/tiles.json?key=YOUR-API-KEY'
@@ -305,7 +179,6 @@
         }
       }, 'poi');
 
-      // 到達時間_最高水位_sのレイヤーを追加する
       map.addLayer({
         id: 'tsunami-highest',
         ...baseLayer,
@@ -350,15 +223,6 @@
         currentTimeLabel.innerHTML = `${currentTime / 60}min`;
         filterBy(currentTime);
       });
-
-      // click to show all layers feature properties in console
-      map.on('click', (e) => {
-        const features = map.queryRenderedFeatures(e.point, { layers: ['tsunami-1cm', 'tsunami-30cm', 'tsunami-1m', 'tsunami-3m', 'tsunami-5m', 'tsunami-10m', 'tsunami-20m', 'tsunami-30m', 'tsunami-40m', 'tsunami-highest'] });
-        if (features.length) {
-          console.log(features[0].properties);
-        }
-      });
-
 
     });
   </script>
