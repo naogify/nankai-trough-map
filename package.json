@@ -17,11 +17,7 @@
   },
   "homepage": "https://github.com/naogify/nankai-trough-map#readme",
   "dependencies": {
-    "@turf/turf": "^6.5.0",
     "csv-parse": "^5.3.1",
-    "csv-writer": "^1.6.0",
-    "csv2geojson": "^5.1.2",
-    "meterstodegrees": "^0.0.5",
-    "turf": "^3.0.14"
+    "meterstodegrees": "^0.0.5"
   }
 }
