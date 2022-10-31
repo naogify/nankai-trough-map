@@ -63,7 +63,10 @@ const csv2geojson = (csvFile, geojsonFile) => {
     // write geojson file
     fs.writeFileSync(geojsonFile, JSON.stringify(geojson))
 
-    console.log(`進捗: ${index + 1}/${maxDataLength} : ${((index + 1) / maxDataLength) * 100}%\r`)
+    // ターミナルに進捗を表示　小数点第二位まで
+    const progress = (index + 1) / maxDataLength * 100
+    process.stdout.write(` 進捗: ${index + 1}/${maxDataLength} : ${progress.toFixed(2)}%\r`)
+
   })
 
 }
