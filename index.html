@@ -129,10 +129,20 @@
       bearing: -26.4,
       zoom: 13.69,
       hash: true,
-      minZoom: 10
+      minZoom: 10,
+      maxZoom: 20,
+      maxPitch: 85
     });
 
     map.on('load', () => {
+
+      // add source raster
+      // map.addSource('gsi-raster', {
+      //   type: 'raster',
+      //   tiles: [
+      //     'https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg',
+      //   ],
+      // });
 
       // add terrainSource
       map.addSource('terrainSource', {
@@ -146,14 +156,26 @@
       });
 
       //add hillshade layer
-      map.addLayer({
-        id: 'hillshade',
-        type: 'hillshade',
-        source: 'terrainSource',
-        paint: {
-          "hillshade-shadow-color": "#473B24"
+      map.addLayer(
+        {
+          id: 'hillshade',
+          type: 'hillshade',
+          source: 'terrainSource',
+          paint: {
+            "hillshade-shadow-color": "#808080"
+          },
         },
-      });
+        'poi'
+      );
+
+      // map.addLayer({
+      //   id: 'raster',
+      //   type: 'raster',
+      //   source: 'gsi-raster',
+      //   paint: {
+      //     'raster-opacity': 0.8
+      //   }
+      // });
 
       const compareNow = (arriveTime, nextArriveTime, currentTime) => {
         return [
@@ -279,6 +301,7 @@
       });
 
       const filterBy = (currentTime) => {
+
         map.setFilter('tsunami-1cm', compareNow('到達時間_01cm_s', '到達時間_30cm_s', currentTime));
         map.setFilter('tsunami-30cm', compareNow('到達時間_30cm_s', '到達時間_01m_s', currentTime));
         map.setFilter('tsunami-1m', compareNow('到達時間_01m_s', '到達時間_03m_s', currentTime));
