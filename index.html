@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nankai Trough Tsunami Visualization Map</title>
+  <link href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css" rel="stylesheet" />
   <style>
     html,
     body,
@@ -21,18 +22,47 @@
       z-index: 2;
       top: 10px;
       left: 10px;
-      background-color: rgba(255, 255, 255, 0.8);
-      padding: 5px 20px;
-      border: 1px solid #909090;
-      max-width: 300px;
+      width: 320px;
+      background: #f2f2f2;
+      border-radius: 4px;
+      padding: 16px;
+      margin: 0 0 24px;
+      box-shadow: 0 0px 16px rgb(0 0 0 / 24%);
     }
 
     .map-overlay-container label {
       margin-right: 3px;
     }
 
+    .map-overlay-container .title {
+      display: inline-block;
+      color: #2E3C43;
+      line-height: 28px;
+      font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+      font-size: 20px;
+      font-weight: 600;
+      /* margin: 0; */
+      width: calc(100% - 24px);
+    }
+
+    .map-overlay-container .title span {
+      font-size: 14px;
+      font-weight: 400;
+      color: #2E3C43;
+      margin-left: 8px;
+    }
+
+    .description {
+      color: #747D82;
+      font-size: 12px;
+      line-height: 16px;
+      font-weight: 400;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
     #slider {
-      width: 100%;
+      width: calc(100% - 24px);
       margin: 10px 0;
     }
 
@@ -69,7 +99,6 @@
 
     h2 {
       font-size: 16px;
-      text-align: center;
     }
 
     #toolTip {
@@ -92,33 +121,17 @@
   <div class="map-overlay-container">
     <div class="map-overlay top">
       <div class="map-overlay-inner">
-        <h2>Tsunami visualization map by Nankai Trough Mega Earthquake (Kushimoto, Wakayama, Japan)</h2>
-        <label id="year"></label>
+        <h2 class="title">Tsunami Visualization Map <span>by Nankai Trough Mega Earthquake</span></h2>
+        <div class="description"> Tsunami visualization map by Nankai Trough Mega Earthquake (Kushimoto, Wakayama, Japan). This map contains data from <a class="attribution"
+          href="https://www.geospatial.jp/ckan/dataset/1211/resource/d2313be4-49ba-415b-b1cf-5a3ed82fe50c">「内閣府 南海トラフの巨大地震モデル検討会」（津波断層モデル(11)津波浸水深データ（ケース1）ケース02_堤防破堤）</a></div>
         <input id="slider" type="range" min="0" max="3600" step="30" value="0">
         <div class="legend-container">
-          <!-- <div id="legend-color">
-            <div style="flex:0 0 33%;background:#FFCD38"></div>
-            <div style="flex:0 0 33%;background:#FF8D29"></div>
-            <div style="flex:0 0 33%;background:#FF4949"></div>
-          </div> -->
-          <div id="legend-number">
-            <!-- <div style="width:33%">0</div>
-            <div style="width:33%">25</div>
-            <div style="width:33%"><span>50</span><span>122</span></div> -->
-            <div style="width:50%">0min</div>
-            <div style="width:50%">60min</div>
-          </div>
           <div id="currentTime">0min</div>
         </div>
         <div class="note">※Calculated per 10㎡</div>
-        <a class="attribution"
-          href="https://www.geospatial.jp/ckan/dataset/1211/resource/d2313be4-49ba-415b-b1cf-5a3ed82fe50c">
-          <p>This map contains data from「内閣府 南海トラフの巨大地震モデル検討会」（津波断層モデル(11)津波浸水深データ（ケース1）ケース02_堤防破堤）</p>
-        </a>
       </div>
     </div>
   </div>
-  <!-- <script type="text/javascript" src="https://cdn.geolonia.com/v1/embed?geolonia-api-key=YOUR-API-KEY"></script> -->
   <script src="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js"></script>
   <script>
     const map = new maplibregl.Map({
@@ -199,7 +212,8 @@
         'source-layer': 'g-simplestyle-v1',
         paint: {
           'fill-extrusion-color': '#ff0000',
-          'fill-extrusion-opacity': 0.8
+          'fill-extrusion-opacity': 0.8,
+          'fill-extrusion-vertical-gradient': true,
         }
       }
 
@@ -216,7 +230,7 @@
           ...baseLayer.paint,
           'fill-extrusion-height': 0.01,
         }
-      });
+      }, 'poi');
 
       map.addLayer({
         id: 'tsunami-30cm',
@@ -225,7 +239,7 @@
           ...baseLayer.paint,
           'fill-extrusion-height': 0.3,
         }
-      });
+      }, 'poi');
 
       map.addLayer({
         id: 'tsunami-1m',
@@ -234,7 +248,7 @@
           ...baseLayer.paint,
           'fill-extrusion-height': 1,
         }
-      });
+      }, 'poi');
 
       map.addLayer({
         id: 'tsunami-3m',
@@ -243,7 +257,7 @@
           ...baseLayer.paint,
           'fill-extrusion-height': 3,
         }
-      });
+      }, 'poi');
 
       map.addLayer({
         id: 'tsunami-5m',
@@ -252,7 +266,7 @@
           ...baseLayer.paint,
           'fill-extrusion-height': 5,
         }
-      });
+      }, 'poi');
 
       map.addLayer({
         id: 'tsunami-10m',
@@ -261,7 +275,7 @@
           ...baseLayer.paint,
           'fill-extrusion-height': 10,
         }
-      });
+      }, 'poi');
 
       map.addLayer({
         id: 'tsunami-20m',
@@ -270,7 +284,7 @@
           ...baseLayer.paint,
           'fill-extrusion-height': 20,
         }
-      });
+      }, 'poi');
 
       map.addLayer({
         id: 'tsunami-30m',
@@ -279,7 +293,7 @@
           ...baseLayer.paint,
           'fill-extrusion-height': 30,
         }
-      });
+      }, 'poi');
 
       map.addLayer({
         id: 'tsunami-40m',
@@ -288,7 +302,7 @@
           ...baseLayer.paint,
           'fill-extrusion-height': 40,
         }
-      });
+      }, 'poi');
 
       // 到達時間_最高水位_sのレイヤーを追加する
       map.addLayer({
@@ -298,7 +312,7 @@
           ...baseLayer.paint,
           'fill-extrusion-height': ['to-number', ['get', '浸水深公表値_m']],
         }
-      });
+      }, 'poi');
 
       const filterBy = (currentTime) => {
 
