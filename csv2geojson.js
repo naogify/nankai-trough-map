@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// メモリ10GB を許可
+//export NODE_OPTIONS="--max-old-space-size=10024"
+
 const fs = require('fs')
 const { parse } = require('csv-parse/sync');
 const { point2mesh } = require('./point2mesh')
@@ -64,6 +67,10 @@ const csv2geojson = (csvFile, geojsonFile) => {
         // ターミナルに進捗を表示　小数点第二位まで
         const progress = (i + 1) / records.length * 100
         process.stdout.write(` 進捗: ${i + 1}/${records.length} : ${progress.toFixed(2)}%\r`)
+
+        if (i === 10) {
+          break;
+        }
   }
 
 }
