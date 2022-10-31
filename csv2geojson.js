@@ -64,10 +64,6 @@ const csv2geojson = (csvFile, geojsonFile) => {
         // ターミナルに進捗を表示　小数点第二位まで
         const progress = (i + 1) / records.length * 100
         process.stdout.write(` 進捗: ${i + 1}/${records.length} : ${progress.toFixed(2)}%\r`)
-    
-        if (i + 1 === 1) {
-          break
-        }
   }
 
 }
