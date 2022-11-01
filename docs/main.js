@@ -181,28 +181,12 @@ map.on('load', () => {
         layout: {
           'icon-image': 'kushimoto-shelter',
           'icon-allow-overlap': true,
-          'icon-size': 0.5,
+          'icon-size': 0.7,
           'icon-offset': [0, -42],
         },
       });
     }
   );
-
-  // // add circle layer
-  // map.addLayer({
-  //   id: 'shelters-circle',
-  //   type: 'circle',
-  //   source: 'kushmoto-hazard-shelter',
-  //   'source-layer': 'g-simplestyle-v1',
-  //   minzoom: 15,
-  //   paint: {
-  //     'circle-radius': 10,
-  //     'circle-color': '#fff',
-  //     'circle-opacity': 0.5,
-  //     'circle-stroke-width': 2,
-  //     'circle-stroke-color': '#000',
-  //   },
-  // });
 
   const filterBy = (currentTime) => {
 
