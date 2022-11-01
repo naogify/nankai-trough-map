@@ -19,8 +19,26 @@
         <div class="description"> Tsunami visualization map by Nankai Trough Mega Earthquake (Kushimoto, Wakayama, Japan). This map contains data from <a class="attribution"
           href="https://www.geospatial.jp/ckan/dataset/1211/resource/d2313be4-49ba-415b-b1cf-5a3ed82fe50c">「内閣府 南海トラフの巨大地震モデル検討会」（津波断層モデル(11)津波浸水深データ（ケース1）ケース02_堤防破堤）</a></div>
         <input id="slider" type="range" min="0" max="3600" step="30" value="0">
+        <div id="currentTime">0min</div>
         <div class="legend-container">
-          <div id="currentTime">0min</div>
+          <div id="legend-color">
+            <div class="legend-color-item">
+              <div class="legend-color-item-color" style="background-color: #FFF323"></div>
+              <div class="legend-color-item-text">1cm</div>
+            </div>
+            <div class="legend-color-item">
+              <div class="legend-color-item-color" style="background-color: #FFCA03"></div>
+              <div class="legend-color-item-text">30cm</div>
+            </div>
+            <div class="legend-color-item">
+              <div class="legend-color-item-color" style="background-color: #FF5403"></div>
+              <div class="legend-color-item-text">1m</div>
+            </div>
+            <div class="legend-color-item">
+              <div class="legend-color-item-color" style="background-color: #F90716"></div>
+              <div class="legend-color-item-text">3m~</div>
+            </div>
+          </div>
         </div>
         <div class="note">※Calculated per 10㎡</div>
         <div class="note">Map Data: <a class="attribution" href="https://geolonia.com/">Geolonia</a> / <a class="attribution" href="https://www.gsi.go.jp/">GSI Japan</a> / <a class="attribution" href="https://www.openstreetmap.org/copyright/en">OpenStreetMap</a></div>

@@ -73,6 +73,7 @@ map.on('load', () => {
     paint: {
       ...baseLayer.paint,
       'fill-extrusion-height': 0.01,
+      'fill-extrusion-color': '#FFF323'
     }
   }, 'poi');
 
@@ -82,6 +83,7 @@ map.on('load', () => {
     paint: {
       ...baseLayer.paint,
       'fill-extrusion-height': 0.3,
+      'fill-extrusion-color': '#FFCA03'
     }
   }, 'poi');
 
@@ -91,6 +93,7 @@ map.on('load', () => {
     paint: {
       ...baseLayer.paint,
       'fill-extrusion-height': 1,
+      'fill-extrusion-color': '#FF5403'
     }
   }, 'poi');
 
@@ -100,6 +103,7 @@ map.on('load', () => {
     paint: {
       ...baseLayer.paint,
       'fill-extrusion-height': 3,
+      'fill-extrusion-color': '#F90716'
     }
   }, 'poi');
 

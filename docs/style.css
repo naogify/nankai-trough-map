@@ -53,10 +53,35 @@ body,
 #slider {
   width: calc(100% - 24px);
   margin: 10px 0;
+  margin-bottom: 0px;
 }
 
 .legend-container {
-  margin: 10px 0;
+  margin: 15px 0;
+}
+
+#legend-color {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+#legend-color .legend-color-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 5px;
+}
+
+#legend-color .legend-color-item-color{
+  height: 15px;
+  width: 30px;
+  margin-right: 5px;
+}
+
+#legend-color .legend-color-item-text{
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .note {
