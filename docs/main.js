@@ -1,3 +1,30 @@
+const compareNow = (arriveTime, nextArriveTime, currentTime) => {
+  return [
+    'all',
+    [
+      'all',
+      ['!=', ['to-number', ['get', arriveTime]], -9999], // もし到達時間_30cm_s が -9999 なら
+      ['<=', ['to-number', ['get', arriveTime]], currentTime], // 現在の時間が「到達時間_01cm_s」よりも大きい
+    ],
+    ['case',
+      ['==', ['to-number', ['get', nextArriveTime]], -9999], // もし到達時間_30cm_s が -9999 なら
+      ['>', ['to-number', ['get', '到達時間_最高水位_s']], currentTime], // 到達時間_最高水位_s と現在の時間を比較して小さいか
+      ['>', ['to-number', ['get', nextArriveTime]], currentTime], // 到達時間_30cm_s と現在の時間を比較して小さければ
+    ]
+  ]
+}
+
+const baseLayer = {
+  type: 'fill-extrusion',
+  source: 'nankai-trough',
+  'source-layer': 'g-simplestyle-v1',
+  paint: {
+    'fill-extrusion-color': '#ff0000',
+    'fill-extrusion-opacity': 0.8,
+    'fill-extrusion-vertical-gradient': true,
+  }
+}
+
 const map = new maplibregl.Map({
   container: 'map',
   style: 'https://cdn.geolonia.com/style/geolonia/gsi/en.json',
@@ -34,33 +61,6 @@ map.on('load', () => {
     },
     'poi'
   );
-
-  const compareNow = (arriveTime, nextArriveTime, currentTime) => {
-    return [
-      'all',
-      [
-        'all',
-        ['!=', ['to-number', ['get', arriveTime]], -9999], // もし到達時間_30cm_s が -9999 なら
-        ['<=', ['to-number', ['get', arriveTime]], currentTime], // 現在の時間が「到達時間_01cm_s」よりも大きい
-      ],
-      ['case',
-        ['==', ['to-number', ['get', nextArriveTime]], -9999], // もし到達時間_30cm_s が -9999 なら
-        ['>', ['to-number', ['get', '到達時間_最高水位_s']], currentTime], // 到達時間_最高水位_s と現在の時間を比較して小さいか
-        ['>', ['to-number', ['get', nextArriveTime]], currentTime], // 到達時間_30cm_s と現在の時間を比較して小さければ
-      ]
-    ]
-  }
-
-  const baseLayer = {
-    type: 'fill-extrusion',
-    source: 'nankai-trough',
-    'source-layer': 'g-simplestyle-v1',
-    paint: {
-      'fill-extrusion-color': '#ff0000',
-      'fill-extrusion-opacity': 0.8,
-      'fill-extrusion-vertical-gradient': true,
-    }
-  }
 
   map.addSource('nankai-trough', {
     type: 'vector',
@@ -160,6 +160,33 @@ map.on('load', () => {
       'fill-extrusion-height': ['to-number', ['get', '浸水深公表値_m']],
     }
   }, 'poi');
+
+  map.addSource('kushmoto-hazard-shelter', {
+    type: 'vector',
+    url: 'https://naogify.github.io/kushimoto-hazard-shelter-api/tiles/tiles.json'
+  });
+
+  map.loadImage(
+    'https://naogify.github.io/nankai-trough-map/kushimoto-shelter.svg',
+    function (error, image) {
+      if (error) throw error;
+      map.addImage('kushimoto-shelter', image);
+
+      // add circle layer
+      map.addLayer({
+        id: 'shelters',
+        type: 'symbol',
+        source: 'shelters',
+        minzoom: 15,
+        layout: {
+          'icon-image': 'kushimoto-shelter',
+          'icon-allow-overlap': true,
+          'icon-size': 0.5,
+          'icon-offset': [0, -42],
+        },
+      });
+    }
+  );
 
   const filterBy = (currentTime) => {
 
