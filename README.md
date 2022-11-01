@@ -20,3 +20,6 @@ https://github.com/geoloniamaps/gsi
 - [Geolonia](https://geolonia.com/)
 - [GSI Japan](https://www.gsi.go.jp/)
 - [OpenStreetMap](https://www.openstreetmap.org/copyright)
+
+### Style
+・Geolonia GSI （https://github.com/geoloniamaps/gsi）
