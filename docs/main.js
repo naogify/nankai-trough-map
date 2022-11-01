@@ -167,16 +167,16 @@ map.on('load', () => {
   });
 
   map.loadImage(
-    'https://naogify.github.io/nankai-trough-map/kushimoto-shelter.svg',
+    'https://naogify.github.io/nankai-trough-map/kushimoto-shelter.png',
     function (error, image) {
       if (error) throw error;
       map.addImage('kushimoto-shelter', image);
 
-      // add circle layer
       map.addLayer({
         id: 'shelters',
         type: 'symbol',
-        source: 'shelters',
+        source: 'kushmoto-hazard-shelter',
+        'source-layer': 'g-simplestyle-v1',
         minzoom: 15,
         layout: {
           'icon-image': 'kushimoto-shelter',
@@ -187,6 +187,22 @@ map.on('load', () => {
       });
     }
   );
+
+  // // add circle layer
+  // map.addLayer({
+  //   id: 'shelters-circle',
+  //   type: 'circle',
+  //   source: 'kushmoto-hazard-shelter',
+  //   'source-layer': 'g-simplestyle-v1',
+  //   minzoom: 15,
+  //   paint: {
+  //     'circle-radius': 10,
+  //     'circle-color': '#fff',
+  //     'circle-opacity': 0.5,
+  //     'circle-stroke-width': 2,
+  //     'circle-stroke-color': '#000',
+  //   },
+  // });
 
   const filterBy = (currentTime) => {
 
