@@ -101,3 +101,16 @@ h2 {
   font-size: 20px;
   font-weight: bold;
 }
+
+@media screen and (max-width: 600px) {
+  .map-overlay-container {
+    position: absolute;
+    z-index: 2;
+    top: auto;
+    bottom: 3px;
+    left: 0;
+    right: 0;
+    padding: 13px;
+    margin: auto;
+  }
+}
