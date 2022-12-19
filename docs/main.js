@@ -53,7 +53,7 @@ const map = new maplibregl.Map({
   pitch: 61,
   bearing: -10.4,
   zoom: 15.18,
-  hash: true,
+  hash: false,
   minZoom: 10,
   maxZoom: 18,
   // maxPitch: 85
